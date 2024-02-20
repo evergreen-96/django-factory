@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 from decouple import config, Csv
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,12 +33,16 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'core',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -109,13 +114,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-Rus'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Yekaterinburg'
 
-USE_I18N = True
-
-USE_TZ = True
+DATETIME_FORMAT = 'd.m.Y H:i:s'
+USE_L10N = False
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -131,3 +136,30 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CELERY_BROKER_URL = config("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = config("REDIS_BACKEND")
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+LOGGING_DIR = os.path.join(BASE_DIR, 'logs')  # Путь к папке для хранения логов
+if not os.path.exists(LOGGING_DIR):
+    os.makedirs(LOGGING_DIR)
+
+if DEBUG == False:
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': lambda request: False,
+    }
+
+JAZZMIN_SETTINGS = {
+    "copyright": "RNovikov production",
+    "site_brand": "WebFactory Admin",
+    "site_title": "WebFactory",
+    "order_with_respect_to": ["core.shiftmodel", "core.ordersmodel",
+                               "core.customusermodel", "core.MachineTypesModel",
+                              "core.machineModel","core.workingareamodel",
+                              "core.positionsModel", "core.rolemodel"],
+    "topmenu_links": [
+        # external url that opens in a new window (Permissions can be added)
+        {"name": "Открыть сайт", "url": "http://212.109.199.169:8000/", "new_window": True},
+    ]
+}
