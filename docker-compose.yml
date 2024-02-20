@@ -13,7 +13,7 @@ services:
     depends_on:
       - redis
       - db
-        
+
   db:
     image: postgres:13
     volumes:
@@ -24,7 +24,9 @@ services:
       - POSTGRES_DB=${DB_NAME}
 
   redis:
-    image: redis:7
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
 
   celery:
     build: .
@@ -37,5 +39,16 @@ services:
       - db
       - redis
       - web
+
+  flower:
+    image: mher/flower
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - FLOWER_PORT=5555
+    ports:
+      - 5555:5555
+    depends_on:
+      - redis
+
 volumes:
   postgres_data:

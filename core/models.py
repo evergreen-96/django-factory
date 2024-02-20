@@ -184,4 +184,3 @@ class UserRequestsModel(models.Model):
     class Meta:
         verbose_name = 'Запрос пользователя'
         verbose_name_plural = 'Запросы пользователя'
-
